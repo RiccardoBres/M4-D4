@@ -5,6 +5,7 @@ let buttonDeleteCart = document.getElementById("delete")
 let lista = document.getElementById("lista");
 lista.classList.add("d-none")
 let listaCarrello = document.getElementById("icon")
+let bookDettails = document.getElementById("booksDettails")
 
 
 
@@ -33,7 +34,7 @@ function createDiv(data) {
     container.innerHTML = "";
 
     filteredBook.forEach(element => {
-
+        console.log(element);
         //creazione variabile conteggio lista 
         let selectedTitle;
 
@@ -66,26 +67,21 @@ function createDiv(data) {
         buttonAdd.classList.add("btn", "btn-primary", "bottoni", "m-1")
         divBotton.appendChild(buttonAdd);
 
+
+
         //add event listner applicato al bottone che permetterà di modificare il bordo della card per dare l'impressione che sia stato aggiunto al carrello 
         buttonAdd.addEventListener("click", function () {
             card.classList.add("border-yellow", "transition-scale",);
             card.classList.remove("border-dark", "transition-scale2");
-
-
             //definiamo il contatore impostato come p all'interno del dom 
             count += 1;
             counter.innerText = count.toString();
-
-
             //creiamo una lista che corrisponderà a tutti i libri inseriti nel carrello
             selectedTitle = element.title;
             let li = document.createElement("li");
             li.innerText = element.title;
             lista.appendChild(li);
-
         })
-
-
         //bottone per rimuovere dal carrello
         let buttonRemove = document.createElement("button");
         buttonRemove.type = "button";
@@ -100,23 +96,48 @@ function createDiv(data) {
                 if (count<0){
                     count = 0;
                 }
-                counter.innerText = count.toString();
+        counter.innerText = count.toString();
+        //creazione rimozione titolo libro nella lista
+        if (selectedTitle) {
+            // Ricerca dell'elemento li corrispondente al titolo selezionato
+
+            // Viene utilizzato il metodo Array.from per convertire la collezione di elementi figlio della lista in un array, 
+            //quindi il metodo find viene utilizzato per cercare l'elemento li che ha un testo interno uguale al selectedTitle. 
+            //Se viene trovato un elemento corrispondente, viene rimosso dalla lista utilizzando il metodo removeChild.
+            let liToRemove = Array.from(lista.children).find(li => li.innerText === selectedTitle);
+            if (liToRemove) {
+                lista.removeChild(liToRemove);
+        }}})
 
 
-                //creazione rimozione titolo libro nella lista
 
-                if (selectedTitle) {
-                    // Ricerca dell'elemento li corrispondente al titolo selezionato
+        
+        let divBottonNextDett = document.createElement("div")
+        divBottonNextDett.classList.add("mt-auto", "justify-content-center",)
 
-                    // Viene utilizzato il metodo Array.from per convertire la collezione di elementi figlio della lista in un array, 
-                    //quindi il metodo find viene utilizzato per cercare l'elemento li che ha un testo interno uguale al selectedTitle. 
-                    //Se viene trovato un elemento corrispondente, viene rimosso dalla lista utilizzando il metodo removeChild.
-                    let liToRemove = Array.from(lista.children).find(li => li.innerText === selectedTitle);
-                    if (liToRemove) {
-                        lista.removeChild(liToRemove);
-                    }
-                }
-        })
+        let buttonNext = document.createElement("button");
+        buttonNext.type = "button";
+        buttonNext.innerText = "Next";
+        buttonNext.classList.add("btn", "btn-primary", "bottoni", "m-1")
+        divBotton.appendChild(buttonNext)
+
+        let buttonDettails = document.createElement("button");
+        buttonDettails.type = "button";
+        let link = document.createElement("a");
+        link.href = `index.html?q=${element.asin.id}`;
+        link.innerText = "Dettagli";
+        link.classList.add("text-light")
+        buttonDettails.appendChild(link);
+        buttonDettails.classList.add("btn", "btn-primary", "bottoni", "m-1");
+        divBotton.appendChild(buttonDettails)
+
+        buttonNext.addEventListener ("click", () => {
+            card.remove()})
+
+
+
+
+
 
             card.appendChild(title);
             card.appendChild(image);
@@ -146,11 +167,8 @@ function createDiv(data) {
 
 }
 
+callFetch();
 
-
-buttonGo.addEventListener("click", function(){
-    callFetch();
-})
 
 
 
