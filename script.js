@@ -1,4 +1,5 @@
-let api = "https://striveschool-api.herokuapp.com/books"
+let api = "https://striveschool-api.herokuapp.com/books";
+let dettailsApi = "https://striveschool-api.herokuapp.com/books/";
 let container = document.getElementById("container");
 let buttonGo = document.getElementById("button");
 let buttonDeleteCart = document.getElementById("delete")
@@ -9,7 +10,18 @@ let bookDettails = document.getElementById("booksDettails")
 
 
 
-
+if(window.location.search) { 
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("q"); // Ottenete l'id come number/string
+  //Eseguo AJAX verso l'endpoint dedicato agli artisti endpointArtistUrl (questo accetta come slug l'id dell'artista da cercare che sarebbe il valore che ho salvato in query):
+    fetch(dettailsApi + query)
+    .then(res => res.json()) // Promise
+  //Lancio una funzione ad hoc per costruire il template del nuovo oggetto artista:
+    .then(dettails => createDettails(dettails)) 
+    .catch((error) => { 
+        console.log("Attention! Error description: " + error);
+    })
+}
 
 
 //questa funzione permette di svolgere la chiamata fech. Nel caso in cui vada a buon fine restituirà la funzione createDiv
@@ -37,38 +49,26 @@ function createDiv(data) {
         console.log(element);
         //creazione variabile conteggio lista 
         let selectedTitle;
-
         //creazione del div card
         let card = document.createElement("div");
         card.classList.add("card", "col-sm-6", "col-md-4", "col-lg-2", "m-2", "bg-dark", "mt-4")
-
-
         //titolo
         let title = document.createElement("p");
         title.innerText = element.title;
         title.classList.add("text-light")
-
-
         //immagine
         let image = document.createElement("img");
         image.src = element.img;
         image.classList.add("img-fluid");
-
-
         //creazione div che conterrà i bottoni
         let divBotton = document.createElement("div")
         divBotton.classList.add("mt-auto", "d-flex", "justify-content-center", "flex-column")
-
-
         //bottone di aggiunta al carrello
         let buttonAdd = document.createElement("button");
         buttonAdd.type = "button";
         buttonAdd.innerText = "aggiungi al carrello";
         buttonAdd.classList.add("btn", "btn-primary", "bottoni", "m-1")
         divBotton.appendChild(buttonAdd);
-
-
-
         //add event listner applicato al bottone che permetterà di modificare il bordo della card per dare l'impressione che sia stato aggiunto al carrello 
         buttonAdd.addEventListener("click", function () {
             card.classList.add("border-yellow", "transition-scale",);
@@ -88,7 +88,6 @@ function createDiv(data) {
         buttonRemove.innerText = "rimuovi dal carrello";
         buttonRemove.classList.add("btn", "btn-primary", "m-1", "mb-2")
         divBotton.appendChild(buttonRemove)
-
         //creazione addEventListner che permettere di rimuovere la selezione del carrello
         buttonRemove.addEventListener("click", function () {
             card.classList.add("border-dark", "transition-scale2");
@@ -107,14 +106,9 @@ function createDiv(data) {
             let liToRemove = Array.from(lista.children).find(li => li.innerText === selectedTitle);
             if (liToRemove) {
                 lista.removeChild(liToRemove);
-        }}})
-
-
-
-        
-        let divBottonNextDett = document.createElement("div")
-        divBottonNextDett.classList.add("mt-auto", "justify-content-center",)
-
+        }}})        
+        let divBottonNextDett = document.createElement("div");
+        divBottonNextDett.classList.add("mt-auto", "justify-content-center");
         let buttonNext = document.createElement("button");
         buttonNext.type = "button";
         buttonNext.innerText = "Next";
@@ -131,19 +125,13 @@ function createDiv(data) {
         buttonDettails.classList.add("btn", "btn-primary", "bottoni", "m-1");
         divBotton.appendChild(buttonDettails)
 
-        buttonNext.addEventListener ("click", () => {
-            card.remove()})
+        buttonNext.addEventListener ("click", () => { card.remove()})
+        card.appendChild(title);
+        card.appendChild(image);
+        card.appendChild(divBotton)
+        container.appendChild(card);
+        container.innerHTML
 
-
-
-
-
-
-            card.appendChild(title);
-            card.appendChild(image);
-            card.appendChild(divBotton)
-            container.appendChild(card);
-            container.innerHTML
         })
 
         //questo addEventListner permette di eliminare la lista carrello creata
@@ -163,8 +151,22 @@ function createDiv(data) {
      listaCarrello.addEventListener("click", function() {
         lista.classList.remove("d-none")
     })
+}
 
-
+function createDettails(dettails) {
+    console.log(dettails);
+    
+        let card = document.createElement("div");
+        card.classList.add("card","bg-dark", "mt-4")
+        //titolo
+        let title = document.createElement("p");
+        title.innerText = dettails.category;
+        title.classList.add("text-light")
+        //immagine
+        let image = document.createElement("img");
+        image.src = dettails.img;
+        image.classList.add("img-fluid"); 
+    
 }
 
 callFetch();

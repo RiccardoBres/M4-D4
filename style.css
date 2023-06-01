@@ -48,6 +48,11 @@ body {
     transform: scale(1.0);
   }
 
+.modalCards {
+    width: 50%;
+    height: 15%;
+}
+
 
   
   
